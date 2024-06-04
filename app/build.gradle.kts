@@ -6,6 +6,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     //id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
+    kotlin("plugin.serialization") version "1.9.23"
 }
 
 android {
@@ -73,7 +74,8 @@ dependencies {
     kapt ("com.google.dagger:hilt-compiler:2.51.1")
 
     // Compose Navigation
-    implementation ("androidx.navigation:navigation-compose:2.7.7")
+    implementation ("androidx.navigation:navigation-compose:2.8.0-alpha08")
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     // Firebase
     implementation ("com.google.firebase:firebase-auth-ktx:23.0.0")

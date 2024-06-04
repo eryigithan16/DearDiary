@@ -1,4 +1,4 @@
-package com.example.deardiary.ui.theme.util
+package com.example.deardiary.util
 
 object Constants {
     const val APP_ID = "deardearyapp-rrisjlr"
