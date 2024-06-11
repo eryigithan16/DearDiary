@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.example.deardiary.presentation.screens.auth.AuthenticationScreen
 
 @Composable
 fun SetupNavGraph(startDestination: Screen, navController: NavHostController) {
@@ -17,7 +18,11 @@ fun SetupNavGraph(startDestination: Screen, navController: NavHostController) {
 }
 
 fun NavGraphBuilder.authenticationRoute() {
-    composable<Screen.Authentication> {}
+    composable<Screen.Authentication> {
+        AuthenticationScreen(loadingState = false, onButtonClicked = {
+
+        })
+    }
 }
 
 fun NavGraphBuilder.homeRoute() {
