@@ -125,7 +125,11 @@ dependencies {
     // Desugar JDK
     coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:2.0.4")
 
+    //One Tab Google
+    implementation("com.github.stevdza-san:OneTapCompose:1.0.7")
 
+    //Message Bar
+    implementation("com.github.stevdza-san:MessageBarCompose:1.0.8")
 }
 kapt {
     correctErrorTypes = true
