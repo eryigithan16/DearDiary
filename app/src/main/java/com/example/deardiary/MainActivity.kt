@@ -12,20 +12,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
 import com.example.deardiary.navigation.Screen
 import com.example.deardiary.navigation.SetupNavGraph
 import com.example.deardiary.ui.theme.DearDiaryTheme
+import com.example.deardiary.util.Constants.APP_ID
+import io.realm.kotlin.mongodb.App
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             DearDiaryTheme {
                 val navController = rememberNavController()
-                SetupNavGraph(startDestination = Screen.Authentication, navController = navController)
+                SetupNavGraph(startDestination = getStartDestination(), navController = navController)
             }
         }
     }
+}
+
+private fun getStartDestination(): Screen {
+    val user = App.create(APP_ID).currentUser
+    return if (user != null && user.loggedIn) Screen.Home else Screen.Authentication
 }
