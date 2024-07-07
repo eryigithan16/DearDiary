@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.deardiary.presentation.screens.auth.AuthenticationScreen
 import com.example.deardiary.presentation.screens.auth.AuthenticationViewModel
+import com.example.deardiary.presentation.screens.home.HomeScreen
 import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.OneTapSignInState
 import com.stevdzasan.onetap.rememberOneTapSignInState
@@ -21,7 +22,9 @@ fun SetupNavGraph(startDestination: Screen, navController: NavHostController) {
                 navController.navigate(Screen.Home)
             }
         )
-        homeRoute()
+        homeRoute(
+            navigateToWrite = { navController.navigate(Screen.Write("id")) }
+        )
         writeRoute()
     }
 }
@@ -64,15 +67,19 @@ fun NavGraphBuilder.authenticationRoute(
     }
 }
 
-fun NavGraphBuilder.homeRoute() {
+fun NavGraphBuilder.homeRoute(navigateToWrite: () -> Unit) {
     composable<Screen.Home> {
-
+        HomeScreen(
+            onMenuClicked = {},
+            navigateToWrite = navigateToWrite
+        )
     }
 }
 
 fun NavGraphBuilder.writeRoute() {
-    composable<Screen.Write> { backStackEntry ->
+    composable<Screen.Write> {
+        /*backStackEntry ->
         val args = backStackEntry.toRoute<Screen.Write>()
-        args.id
+        args.id*/
     }
 }
