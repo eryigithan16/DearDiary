@@ -1,18 +1,29 @@
 package com.example.deardiary.navigation
 
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.example.deardiary.presentation.components.DisplayAlertDialog
 import com.example.deardiary.presentation.screens.auth.AuthenticationScreen
 import com.example.deardiary.presentation.screens.auth.AuthenticationViewModel
 import com.example.deardiary.presentation.screens.home.HomeScreen
+import com.example.deardiary.util.Constants.APP_ID
 import com.stevdzasan.messagebar.rememberMessageBarState
-import com.stevdzasan.onetap.OneTapSignInState
 import com.stevdzasan.onetap.rememberOneTapSignInState
+import io.realm.kotlin.mongodb.App
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun SetupNavGraph(startDestination: Screen, navController: NavHostController) {
@@ -23,7 +34,11 @@ fun SetupNavGraph(startDestination: Screen, navController: NavHostController) {
             }
         )
         homeRoute(
-            navigateToWrite = { navController.navigate(Screen.Write("id")) }
+            navigateToWrite = { navController.navigate(Screen.Write("id")) },
+            navigateToAuth = {
+                navController.popBackStack()
+                navController.navigate(Screen.Authentication)
+            }
         )
         writeRoute()
     }
@@ -67,11 +82,42 @@ fun NavGraphBuilder.authenticationRoute(
     }
 }
 
-fun NavGraphBuilder.homeRoute(navigateToWrite: () -> Unit) {
+fun NavGraphBuilder.homeRoute(
+    navigateToWrite: () -> Unit,
+    navigateToAuth: () -> Unit
+) {
     composable<Screen.Home> {
+        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+        var signOutDialogOpened by remember { mutableStateOf(false) }
+        val scope = rememberCoroutineScope()
         HomeScreen(
-            onMenuClicked = {},
+            onMenuClicked = {
+                scope.launch {
+                    drawerState.open()
+                }
+            },
+            drawerState = drawerState,
+            onSignOutClicked = {
+                signOutDialogOpened = true
+            },
             navigateToWrite = navigateToWrite
+        )
+        DisplayAlertDialog(
+            title = "Sign Out",
+            message = "Are you sure you want to Sign Out from your Google Account",
+            dialogOpened = signOutDialogOpened,
+            onCloseDialog = { signOutDialogOpened = false },
+            onYesClicked = {
+                scope.launch(Dispatchers.IO) {
+                    val user = App.create(APP_ID).currentUser
+                    if (user != null) {
+                        user.logOut()
+                        withContext(Dispatchers.Main) {
+                            navigateToAuth()
+                        }
+                    }
+                }
+            }
         )
     }
 }
