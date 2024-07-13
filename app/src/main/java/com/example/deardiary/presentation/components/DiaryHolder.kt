@@ -1,5 +1,6 @@
 package com.example.deardiary.presentation.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,6 +35,7 @@ import com.example.deardiary.model.Diary
 import com.example.deardiary.model.Mood
 import com.example.deardiary.ui.theme.Elevation
 import com.example.deardiary.util.toInstant
+import io.realm.kotlin.ext.realmListOf
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.Date
@@ -42,6 +45,7 @@ import java.util.Locale
 fun DiaryHolder(diary: Diary, onClick: (String) -> Unit) {
     var componentHeight by remember { mutableStateOf(0.dp) }
     val localDensity = LocalDensity.current
+    var galleryOpened by remember { mutableStateOf(false) }
 
     Row(modifier = Modifier.clickable(
         indication = null,
@@ -72,6 +76,17 @@ fun DiaryHolder(diary: Diary, onClick: (String) -> Unit) {
                     maxLines = 5,
                     overflow = TextOverflow.Ellipsis
                 )
+                if (diary.images.isNotEmpty()) {
+                    ShowGalleryButton(
+                        galleryOpened = galleryOpened,
+                        onClick = { galleryOpened = !galleryOpened }
+                    )
+                }
+                AnimatedVisibility(visible = galleryOpened) {
+                    Column(modifier = Modifier.padding(all = 14.dp)) {
+                        Gallery(images = diary.images)
+                    }
+                }
             }
         }
     }
@@ -109,6 +124,19 @@ fun DiaryHeader(moodName: String, time: Instant) {
     }
 }
 
+@Composable
+fun ShowGalleryButton(
+    galleryOpened: Boolean,
+    onClick: () -> Unit
+) {
+    TextButton(onClick = onClick) {
+        Text(
+            text = if (galleryOpened) "Hide Gallery" else "Show Gallery",
+            style = TextStyle(fontSize = MaterialTheme.typography.bodySmall.fontSize)
+        )
+    }
+}
+
 @Preview
 @Composable
 fun DiaryHolderPreview() {
@@ -116,5 +144,6 @@ fun DiaryHolderPreview() {
         title = "My Diary"
         description = "Dsdfgsdfgsdfg  sdfgsdfgsdfgsdfg dsfgsdfgsdfgsdfgsdfgsdfgsdfg sdfgdsfg sdfg sdfg dsfgdsfgsdfgdsg"
         mood = Mood.Angry.name
+        images = realmListOf("", "")
     }) {}
 }
