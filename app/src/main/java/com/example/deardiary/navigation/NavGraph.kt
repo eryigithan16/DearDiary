@@ -13,6 +13,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.example.deardiary.data.repository.MongoDB
 import com.example.deardiary.presentation.components.DisplayAlertDialog
 import com.example.deardiary.presentation.screens.auth.AuthenticationScreen
 import com.example.deardiary.presentation.screens.auth.AuthenticationViewModel
@@ -102,6 +103,9 @@ fun NavGraphBuilder.homeRoute(
             },
             navigateToWrite = navigateToWrite
         )
+        LaunchedEffect(key1 = Unit) {
+            MongoDB.configureTheRealm()
+        }
         DisplayAlertDialog(
             title = "Sign Out",
             message = "Are you sure you want to Sign Out from your Google Account",

@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
+import com.example.deardiary.data.repository.MongoDB
 import com.example.deardiary.navigation.Screen
 import com.example.deardiary.navigation.SetupNavGraph
 import com.example.deardiary.ui.theme.DearDiaryTheme
