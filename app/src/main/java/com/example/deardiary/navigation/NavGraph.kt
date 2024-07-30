@@ -18,6 +18,7 @@ import com.example.deardiary.presentation.components.DisplayAlertDialog
 import com.example.deardiary.presentation.screens.auth.AuthenticationScreen
 import com.example.deardiary.presentation.screens.auth.AuthenticationViewModel
 import com.example.deardiary.presentation.screens.home.HomeScreen
+import com.example.deardiary.presentation.screens.home.HomeViewModel
 import com.example.deardiary.util.Constants.APP_ID
 import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
@@ -88,10 +89,13 @@ fun NavGraphBuilder.homeRoute(
     navigateToAuth: () -> Unit
 ) {
     composable<Screen.Home> {
+        val viewModel : HomeViewModel = viewModel()
+        val diaries by viewModel.diaries
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         var signOutDialogOpened by remember { mutableStateOf(false) }
         val scope = rememberCoroutineScope()
         HomeScreen(
+            diaries = diaries,
             onMenuClicked = {
                 scope.launch {
                     drawerState.open()
