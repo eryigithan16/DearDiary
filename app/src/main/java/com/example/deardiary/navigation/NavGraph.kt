@@ -14,11 +14,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.deardiary.data.repository.MongoDB
+import com.example.deardiary.model.Diary
 import com.example.deardiary.presentation.components.DisplayAlertDialog
 import com.example.deardiary.presentation.screens.auth.AuthenticationScreen
 import com.example.deardiary.presentation.screens.auth.AuthenticationViewModel
 import com.example.deardiary.presentation.screens.home.HomeScreen
 import com.example.deardiary.presentation.screens.home.HomeViewModel
+import com.example.deardiary.presentation.screens.write.WriteScreen
 import com.example.deardiary.util.Constants.APP_ID
 import com.example.deardiary.util.RequestState
 import com.stevdzasan.messagebar.rememberMessageBarState
@@ -39,7 +41,7 @@ fun SetupNavGraph(
             navigateToHome = {
                 navController.navigate(Screen.Home)
             },
-            onDataLoaded =  onDataLoaded
+            onDataLoaded = onDataLoaded
         )
         homeRoute(
             navigateToWrite = { navController.navigate(Screen.Write("id")) },
@@ -47,9 +49,11 @@ fun SetupNavGraph(
                 navController.popBackStack()
                 navController.navigate(Screen.Authentication)
             },
-            onDataLoaded =  onDataLoaded
+            onDataLoaded = onDataLoaded
         )
-        writeRoute()
+        writeRoute(
+            onBackPressed = { navController.popBackStack() }
+        )
     }
 }
 
@@ -101,14 +105,14 @@ fun NavGraphBuilder.homeRoute(
     onDataLoaded: () -> Unit
 ) {
     composable<Screen.Home> {
-        val viewModel : HomeViewModel = viewModel()
+        val viewModel: HomeViewModel = viewModel()
         val diaries by viewModel.diaries
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         var signOutDialogOpened by remember { mutableStateOf(false) }
         val scope = rememberCoroutineScope()
-        
+
         LaunchedEffect(key1 = diaries) {
-            if (diaries !is RequestState.Loading){
+            if (diaries !is RequestState.Loading) {
                 onDataLoaded()
             }
         }
@@ -149,10 +153,15 @@ fun NavGraphBuilder.homeRoute(
     }
 }
 
-fun NavGraphBuilder.writeRoute() {
+fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
     composable<Screen.Write> {
         /*backStackEntry ->
         val args = backStackEntry.toRoute<Screen.Write>()
         args.id*/
+        WriteScreen(
+            selectedDiary = null,
+            onDeleteConfirmed = {},
+            onBackPressed = onBackPressed
+        )
     }
 }
