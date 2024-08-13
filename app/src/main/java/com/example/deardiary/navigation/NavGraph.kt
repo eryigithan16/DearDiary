@@ -1,5 +1,6 @@
 package com.example.deardiary.navigation
 
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -15,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.deardiary.data.repository.MongoDB
 import com.example.deardiary.model.Diary
+import com.example.deardiary.model.Mood
 import com.example.deardiary.presentation.components.DisplayAlertDialog
 import com.example.deardiary.presentation.screens.auth.AuthenticationScreen
 import com.example.deardiary.presentation.screens.auth.AuthenticationViewModel
@@ -158,9 +160,11 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
         /*backStackEntry ->
         val args = backStackEntry.toRoute<Screen.Write>()
         args.id*/
+        val pagerState = rememberPagerState(pageCount = { Mood.entries.size })
         WriteScreen(
             selectedDiary = null,
             onDeleteConfirmed = {},
+            pagerState = pagerState,
             onBackPressed = onBackPressed
         )
     }
