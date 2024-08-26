@@ -23,6 +23,7 @@ import com.example.deardiary.presentation.screens.auth.AuthenticationViewModel
 import com.example.deardiary.presentation.screens.home.HomeScreen
 import com.example.deardiary.presentation.screens.home.HomeViewModel
 import com.example.deardiary.presentation.screens.write.WriteScreen
+import com.example.deardiary.presentation.screens.write.WriteViewModel
 import com.example.deardiary.util.Constants.APP_ID
 import com.example.deardiary.util.RequestState
 import com.stevdzasan.messagebar.rememberMessageBarState
@@ -46,12 +47,15 @@ fun SetupNavGraph(
             onDataLoaded = onDataLoaded
         )
         homeRoute(
-            navigateToWrite = { navController.navigate(Screen.Write("id")) },
+            navigateToWrite = { navController.navigate(Screen.Write()) },
             navigateToAuth = {
                 navController.popBackStack()
                 navController.navigate(Screen.Authentication)
             },
-            onDataLoaded = onDataLoaded
+            onDataLoaded = onDataLoaded,
+            navigateToWriteWithArgs = {
+                navController.navigate(Screen.Write(it))
+            }
         )
         writeRoute(
             onBackPressed = { navController.popBackStack() }
@@ -103,6 +107,7 @@ fun NavGraphBuilder.authenticationRoute(
 
 fun NavGraphBuilder.homeRoute(
     navigateToWrite: () -> Unit,
+    navigateToWriteWithArgs: (String) -> Unit,
     navigateToAuth: () -> Unit,
     onDataLoaded: () -> Unit
 ) {
@@ -130,7 +135,8 @@ fun NavGraphBuilder.homeRoute(
             onSignOutClicked = {
                 signOutDialogOpened = true
             },
-            navigateToWrite = navigateToWrite
+            navigateToWrite = navigateToWrite,
+            navigateToWriteWithArgs = navigateToWriteWithArgs
         )
         LaunchedEffect(key1 = Unit) {
             MongoDB.configureTheRealm()
@@ -160,12 +166,30 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
         /*backStackEntry ->
         val args = backStackEntry.toRoute<Screen.Write>()
         args.id*/
+        val viewModel: WriteViewModel = viewModel()
+        val uiState = viewModel.uiState
+        LaunchedEffect(key1 = uiState) {
+
+        }
         val pagerState = rememberPagerState(pageCount = { Mood.entries.size })
+        val pageNumber by remember { derivedStateOf { pagerState.currentPage } }
         WriteScreen(
-            selectedDiary = null,
-            onDeleteConfirmed = {},
+            uiState = uiState,
+            moodName = { Mood.entries[pageNumber].name },
             pagerState = pagerState,
-            onBackPressed = onBackPressed
+            onTitleChanged = { viewModel.setTitle(title = it) },
+            onDescriptionChanged = { viewModel.setDescription(description = it) },
+            onDeleteConfirmed = {},
+            onBackPressed = onBackPressed,
+            onSaveClicked = {
+                viewModel.insertDiary(
+                    diary = it.apply { mood = Mood.entries[pageNumber].name },
+                    onSuccess = {
+                        onBackPressed()
+                    },
+                    onError = {}
+                )
+            }
         )
     }
 }

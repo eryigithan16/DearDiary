@@ -13,6 +13,7 @@ import io.realm.kotlin.query.Sort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import org.mongodb.kbson.ObjectId
 import java.time.ZoneId
 
 object MongoDB : MongoRepository {
@@ -30,7 +31,7 @@ object MongoDB : MongoRepository {
             val config = SyncConfiguration.Builder(user, setOf(Diary::class))
                 .initialSubscriptions { sub ->
                     add(
-                        query = sub.query<Diary>("ownerId == $0", user.identities),
+                        query = sub.query<Diary>(query = "ownerId == $0", user.id),
                         name = "User's Diaries"
                     )
                 }
@@ -58,6 +59,34 @@ object MongoDB : MongoRepository {
             }
         } else {
             flow { emit(RequestState.Error(UserNotAuthenticatedException())) }
+        }
+    }
+
+    override fun getSelectedDiary(diaryId: ObjectId): RequestState<Diary> {
+        return if (user != null) {
+            try {
+                val diary = realm.query<Diary>(query = "_id == $0", diaryId).find().first()
+                RequestState.Success(data = diary)
+            } catch (e: Exception) {
+                RequestState.Error(e)
+            }
+        } else {
+            RequestState.Error(UserNotAuthenticatedException())
+        }
+    }
+
+    override suspend fun addNewDiary(diary: Diary): RequestState<Diary> {
+        return if (user != null) {
+            realm.write {
+                try {
+                    val addedDiary = copyToRealm(diary.apply { ownerId = user.id })
+                    RequestState.Success(data = diary)
+                } catch (e: Exception) {
+                    RequestState.Error(e)
+                }
+            }
+        } else {
+            RequestState.Error(UserNotAuthenticatedException())
         }
     }
 }

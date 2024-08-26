@@ -9,5 +9,5 @@ sealed class Screen {
     @Serializable
     data object Home : Screen()
     @Serializable
-    data class Write(val id: String) : Screen()
+    data class Write(val diaryDetailId: String? = null ) : Screen()
 }
