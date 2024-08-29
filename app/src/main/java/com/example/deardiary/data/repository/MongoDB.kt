@@ -5,6 +5,7 @@ import com.example.deardiary.util.Constants.APP_ID
 import com.example.deardiary.util.RequestState
 import com.example.deardiary.util.toInstant
 import io.realm.kotlin.Realm
+import io.realm.kotlin.delete
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.log.LogLevel
 import io.realm.kotlin.mongodb.App
@@ -65,7 +66,7 @@ object MongoDB : MongoRepository {
     override fun getSelectedDiary(diaryId: ObjectId): Flow<RequestState<Diary>> {
         return if (user != null) {
             try {
-                realm.query<Diary>(query = "_id == $0", diaryId).asFlow().map{
+                realm.query<Diary>(query = "_id == $0", diaryId).asFlow().map {
                     RequestState.Success(data = it.list.first())
                 }
             } catch (e: Exception) {
@@ -94,8 +95,8 @@ object MongoDB : MongoRepository {
     override suspend fun updateDiary(diary: Diary): RequestState<Diary> {
         return if (user != null) {
             realm.write {
-                val queriedDiary = query<Diary>(query = "_id == $0",diary._id).first().find()
-                if (queriedDiary != null){
+                val queriedDiary = query<Diary>(query = "_id == $0", diary._id).first().find()
+                if (queriedDiary != null) {
                     queriedDiary.title = diary.title
                     queriedDiary.description = diary.description
                     queriedDiary.mood = diary.mood
@@ -105,6 +106,24 @@ object MongoDB : MongoRepository {
                 } else {
                     RequestState.Error(error = Exception("Queried Diary does not exist."))
                 }
+            }
+        } else {
+            RequestState.Error(UserNotAuthenticatedException())
+        }
+    }
+
+    override suspend fun deleteDiary(id: ObjectId): RequestState<Diary> {
+        return if (user != null) {
+            realm.write {
+                val diary = query<Diary>(query = "_id == $0 AND ownerId == $1", id, user.id).first().find()
+                if (diary != null) {
+                    try {
+                        delete(diary)
+                        RequestState.Success(diary)
+                    } catch (e: Exception) {
+                        RequestState.Error(e)
+                    }
+                } else RequestState.Error(Exception("Diary does not exist."))
             }
         } else {
             RequestState.Error(UserNotAuthenticatedException())
