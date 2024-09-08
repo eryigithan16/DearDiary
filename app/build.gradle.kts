@@ -4,7 +4,7 @@ plugins {
     id("io.realm.kotlin")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
-    //id("com.google.gms.google-services")
+    id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
     kotlin("plugin.serialization") version "1.9.23"
 }

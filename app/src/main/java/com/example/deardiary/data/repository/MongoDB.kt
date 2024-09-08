@@ -2,10 +2,9 @@ package com.example.deardiary.data.repository
 
 import com.example.deardiary.model.Diary
 import com.example.deardiary.util.Constants.APP_ID
-import com.example.deardiary.util.RequestState
+import com.example.deardiary.model.RequestState
 import com.example.deardiary.util.toInstant
 import io.realm.kotlin.Realm
-import io.realm.kotlin.delete
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.log.LogLevel
 import io.realm.kotlin.mongodb.App

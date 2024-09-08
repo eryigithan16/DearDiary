@@ -1,6 +1,7 @@
 package com.example.deardiary.presentation.screens.write
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -9,6 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.deardiary.model.Diary
+import com.example.deardiary.model.GalleryState
 import com.example.deardiary.model.Mood
 import java.time.ZonedDateTime
 
@@ -18,12 +20,14 @@ fun WriteScreen(
     uiState: UiState,
     moodName: () -> String,
     pagerState: PagerState,
+    galleryState: GalleryState,
     onDateTimeUpdated: (ZonedDateTime) -> Unit,
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onDeleteConfirmed: () -> Unit,
     onBackPressed: () -> Unit,
-    onSaveClicked: (Diary) -> Unit
+    onSaveClicked: (Diary) -> Unit,
+    onImageSelect: (Uri) -> Unit
 ) {
     // Update the Mood when selecting an existing Diary
     LaunchedEffect(key1 = uiState.mood) {
@@ -48,7 +52,9 @@ fun WriteScreen(
                 description = uiState.description,
                 onDescriptionChanged = onDescriptionChanged,
                 paddingValues = it,
-                onSaveClicked = onSaveClicked
+                galleryState = galleryState,
+                onSaveClicked = onSaveClicked,
+                onImageSelect = onImageSelect
             )
         }
     )

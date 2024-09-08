@@ -15,9 +15,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
 import com.example.deardiary.data.repository.MongoDB
-import com.example.deardiary.model.Diary
+import com.example.deardiary.model.GalleryImage
 import com.example.deardiary.model.Mood
 import com.example.deardiary.presentation.components.DisplayAlertDialog
 import com.example.deardiary.presentation.screens.auth.AuthenticationScreen
@@ -27,7 +26,8 @@ import com.example.deardiary.presentation.screens.home.HomeViewModel
 import com.example.deardiary.presentation.screens.write.WriteScreen
 import com.example.deardiary.presentation.screens.write.WriteViewModel
 import com.example.deardiary.util.Constants.APP_ID
-import com.example.deardiary.util.RequestState
+import com.example.deardiary.model.RequestState
+import com.example.deardiary.model.rememberGalleryState
 import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import io.realm.kotlin.mongodb.App
@@ -85,7 +85,7 @@ fun NavGraphBuilder.authenticationRoute(
                 oneTapState.open()
                 viewModel.setLoading(true)
             },
-            onTokenIdReceived = { tokenId ->
+            onSuccessfulFirebaseSignIn = { tokenId ->
                 viewModel.signInWithMongoAtlas(
                     tokenId,
                     onSuccess = {
@@ -102,7 +102,11 @@ fun NavGraphBuilder.authenticationRoute(
                 messageBarState.addError(Exception(message))
                 viewModel.setLoading(false)
             },
-            navigateToHome = navigateToHome
+            navigateToHome = navigateToHome,
+            onFailedFirebaseSignIn = {
+                messageBarState.addError(it)
+                viewModel.setLoading(false)
+            }
         )
     }
 }
@@ -171,6 +175,7 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
         val viewModel: WriteViewModel = viewModel()
         val context = LocalContext.current
         val uiState = viewModel.uiState
+        val galleryState = viewModel.galleryState
         LaunchedEffect(key1 = uiState) {
 
         }
@@ -180,6 +185,7 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
             uiState = uiState,
             moodName = { Mood.entries[pageNumber].name },
             pagerState = pagerState,
+            galleryState = galleryState,
             onTitleChanged = { viewModel.setTitle(title = it) },
             onDescriptionChanged = { viewModel.setDescription(description = it) },
             onDeleteConfirmed = {
@@ -205,6 +211,10 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
             },
             onDateTimeUpdated = {
                 viewModel.updateDateTime(it)
+            },
+            onImageSelect = {
+                val type = context.contentResolver.getType(it)?.split("/")?.last() ?: "jpg"
+                viewModel.addImage(image = it, imageType = type)
             }
         )
     }

@@ -1,5 +1,6 @@
 package com.example.deardiary.presentation.screens.write
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,10 +9,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.deardiary.data.repository.MongoDB
 import com.example.deardiary.model.Diary
+import com.example.deardiary.model.GalleryImage
+import com.example.deardiary.model.GalleryState
 import com.example.deardiary.model.Mood
 import com.example.deardiary.util.Constants.WRITE_ARG_ID
-import com.example.deardiary.util.RequestState
+import com.example.deardiary.model.RequestState
+import com.example.deardiary.model.rememberGalleryState
 import com.example.deardiary.util.toRealmInstant
+import com.google.firebase.auth.FirebaseAuth
 import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -24,6 +29,7 @@ class WriteViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
 
     var uiState by mutableStateOf(UiState())
         private set
+    val galleryState = GalleryState()
 
     init {
         getDiaryIdArgument()
@@ -40,13 +46,13 @@ class WriteViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
                 MongoDB.getSelectedDiary(ObjectId.invoke(uiState.selectedDiaryId!!))
                     .catch { emit(RequestState.Error(Exception("Diary is already deleted"))) }
                     .collect { diary ->
-                    if (diary is RequestState.Success) {
-                        setSelectedDiary(diary.data)
-                        setTitle(title = diary.data.title)
-                        setDescription(description = diary.data.description)
-                        setMood(mood = Mood.valueOf(diary.data.mood))
+                        if (diary is RequestState.Success) {
+                            setSelectedDiary(diary.data)
+                            setTitle(title = diary.data.title)
+                            setDescription(description = diary.data.description)
+                            setMood(mood = Mood.valueOf(diary.data.mood))
+                        }
                     }
-                }
             }
         }
     }
@@ -99,21 +105,29 @@ class WriteViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel
     fun deleteDiary(onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             if (uiState.selectedDiaryId != null) {
-                when(val result = MongoDB.deleteDiary(id = ObjectId.invoke(uiState.selectedDiaryId!!))){
+                when (val result = MongoDB.deleteDiary(id = ObjectId.invoke(uiState.selectedDiaryId!!))) {
                     is RequestState.Success -> {
-                        withContext(Dispatchers.Main){
+                        withContext(Dispatchers.Main) {
                             onSuccess()
                         }
                     }
+
                     is RequestState.Error -> {
-                        withContext(Dispatchers.Main){
+                        withContext(Dispatchers.Main) {
                             onError(result.error.message.toString())
                         }
                     }
+
                     else -> {}
                 }
             }
         }
+    }
+
+    fun addImage(image: Uri, imageType: String) {
+        val remoteImagePath = "images/${FirebaseAuth.getInstance().currentUser?.uid}/" +
+                "${image.lastPathSegment}-${System.currentTimeMillis()}.$imageType"
+        galleryState.addImage(GalleryImage(image, remoteImagePath))
     }
 
     private fun setSelectedDiary(diary: Diary) {

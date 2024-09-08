@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "336858171318",
+    "project_id": "ornate-method-306921",
+    "storage_bucket": "ornate-method-306921.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336858171318:android:dd66e651233cb8e9bd2317",
+        "android_client_info": {
+          "package_name": "com.example.deardiary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "336858171318-c3mo7okfke61rjgg7re5vvdfub51c0b0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGtOcImzywZ_kqBMl9Q7y9GUWiJssPazY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "336858171318-c3mo7okfke61rjgg7re5vvdfub51c0b0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

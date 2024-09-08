@@ -1,4 +1,4 @@
-package com.example.deardiary.util
+package com.example.deardiary.model
 
 sealed class RequestState<out T> {
     data object Idle : RequestState<Nothing>()

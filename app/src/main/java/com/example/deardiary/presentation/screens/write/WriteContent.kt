@@ -1,5 +1,6 @@
 package com.example.deardiary.presentation.screens.write
 
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,7 +40,9 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.deardiary.model.Diary
+import com.example.deardiary.model.GalleryState
 import com.example.deardiary.model.Mood
+import com.example.deardiary.presentation.components.GalleryUploader
 import kotlinx.coroutines.launch
 
 @Composable
@@ -49,9 +52,11 @@ fun WriteContent(
     title: String,
     onTitleChanged: (String) -> Unit,
     description: String,
+    galleryState: GalleryState,
     onDescriptionChanged: (String) -> Unit,
     paddingValues: PaddingValues,
-    onSaveClicked: (Diary) -> Unit
+    onSaveClicked: (Diary) -> Unit,
+    onImageSelect: (Uri) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -144,6 +149,15 @@ fun WriteContent(
             )
         }
         Column(verticalArrangement = Arrangement.Bottom) {
+            Spacer(modifier = Modifier.height(12.dp))
+            GalleryUploader(
+                galleryState = galleryState,
+                onAddClicked = { focusManager.clearFocus() },
+                onImageSelect = onImageSelect,
+                onImageClicked = {
+
+                }
+            )
             Spacer(modifier = Modifier.height(12.dp))
             Button(
                 modifier = Modifier
