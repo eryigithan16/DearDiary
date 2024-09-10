@@ -70,9 +70,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation ("com.google.dagger:hilt-android:2.51.1")
-    kapt ("com.google.dagger:hilt-compiler:2.51.1")
-
     // Compose Navigation
     implementation ("androidx.navigation:navigation-compose:2.8.0-alpha08")
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")

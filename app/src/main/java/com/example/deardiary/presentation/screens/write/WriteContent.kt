@@ -43,6 +43,7 @@ import com.example.deardiary.model.Diary
 import com.example.deardiary.model.GalleryState
 import com.example.deardiary.model.Mood
 import com.example.deardiary.presentation.components.GalleryUploader
+import io.realm.kotlin.ext.toRealmList
 import kotlinx.coroutines.launch
 
 @Composable
@@ -168,6 +169,7 @@ fun WriteContent(
                         onSaveClicked(Diary().apply {
                             this.title = uiState.title
                             this.description = uiState.description
+                            this.images = galleryState.images.map { it.remoteImagePath }.toRealmList()
                         })
                     } else {
                         Toast.makeText(context, "Fields cannot be empty.", Toast.LENGTH_SHORT).show()
