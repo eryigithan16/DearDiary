@@ -17,7 +17,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.deardiary.data.repository.MongoDB
-import com.example.deardiary.model.GalleryImage
 import com.example.deardiary.model.Mood
 import com.example.deardiary.presentation.components.DisplayAlertDialog
 import com.example.deardiary.presentation.screens.auth.AuthenticationScreen
@@ -28,7 +27,6 @@ import com.example.deardiary.presentation.screens.write.WriteScreen
 import com.example.deardiary.presentation.screens.write.WriteViewModel
 import com.example.deardiary.util.Constants.APP_ID
 import com.example.deardiary.model.RequestState
-import com.example.deardiary.model.rememberGalleryState
 import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import io.realm.kotlin.mongodb.App
@@ -216,6 +214,9 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
             onImageSelect = {
                 val type = context.contentResolver.getType(it)?.split("/")?.last() ?: "jpg"
                 viewModel.addImage(image = it, imageType = type)
+            },
+            onImageDeleteClicked = {
+                galleryState.removeImage(it)
             }
         )
     }

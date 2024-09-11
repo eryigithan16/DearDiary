@@ -3,6 +3,7 @@ package com.example.deardiary.util
 import android.net.Uri
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.core.net.toUri
+import com.example.deardiary.data.database.entity.ImageToDelete
 import com.example.deardiary.data.database.entity.ImageToUpload
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.storageMetadata
@@ -63,4 +64,13 @@ fun retryUploadingImageToFirebase(
         storageMetadata { },
         imageToUpload.sessionUri.toUri()
     ).addOnFailureListener { onSuccess() }
+}
+
+fun retryDeletingImageFromFirebase(
+    imageToDelete: ImageToDelete,
+    onSuccess: () -> Unit
+) {
+    val storage = FirebaseStorage.getInstance().reference
+    storage.child(imageToDelete.remoteImagePath).delete()
+        .addOnSuccessListener { onSuccess() }
 }
