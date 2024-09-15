@@ -5,6 +5,7 @@ import com.example.deardiary.util.Constants.APP_ID
 import com.example.deardiary.model.RequestState
 import com.example.deardiary.util.toInstant
 import io.realm.kotlin.Realm
+import io.realm.kotlin.delete
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.log.LogLevel
 import io.realm.kotlin.mongodb.App
@@ -123,6 +124,22 @@ object MongoDB : MongoRepository {
                         RequestState.Error(e)
                     }
                 } else RequestState.Error(Exception("Diary does not exist."))
+            }
+        } else {
+            RequestState.Error(UserNotAuthenticatedException())
+        }
+    }
+
+    override suspend fun deleteAllDiaries(): RequestState<Boolean> {
+        return if (user != null) {
+            realm.write {
+                val diaries = this.query<Diary>("ownerId == $0", user.id).find()
+                try {
+                    delete(diaries)
+                    RequestState.Success(true)
+                } catch (e: Exception) {
+                    RequestState.Error(e)
+                }
             }
         } else {
             RequestState.Error(UserNotAuthenticatedException())
