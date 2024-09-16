@@ -146,7 +146,10 @@ fun NavGraphBuilder.homeRoute(
             navigateToWriteWithArgs = navigateToWriteWithArgs,
             onDeleteAllClicked = {
                 deleteAllDialogOpened = true
-            }
+            },
+            dateIsSelected = viewModel.dateIsSelected,
+            onDateSelected = { viewModel.getDiaries(it) },
+            onDateReset = { viewModel.getDiaries() }
         )
         LaunchedEffect(key1 = Unit) {
             MongoDB.configureTheRealm()

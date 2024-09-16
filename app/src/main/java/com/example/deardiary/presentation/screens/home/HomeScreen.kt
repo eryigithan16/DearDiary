@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.example.deardiary.R
 import com.example.deardiary.data.repository.Diaries
 import com.example.deardiary.model.RequestState
+import java.time.ZonedDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -54,7 +55,10 @@ fun HomeScreen(
     onSignOutClicked: () -> Unit,
     onDeleteAllClicked: () -> Unit,
     navigateToWrite: () -> Unit,
-    navigateToWriteWithArgs: (String) -> Unit
+    navigateToWriteWithArgs: (String) -> Unit,
+    dateIsSelected: Boolean,
+    onDateSelected: (ZonedDateTime) -> Unit,
+    onDateReset: () -> Unit
 ) {
     var padding by remember { mutableStateOf(PaddingValues()) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -66,7 +70,13 @@ fun HomeScreen(
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
-                HomeTapBar(scrollBehavior = scrollBehavior, onMenuClicked = onMenuClicked)
+                HomeTapBar(
+                    scrollBehavior = scrollBehavior,
+                    onMenuClicked = onMenuClicked,
+                    dateIsSelected = dateIsSelected,
+                    onDateSelected = onDateSelected,
+                    onDateReset = onDateReset,
+                )
             },
             floatingActionButton = {
                 FloatingActionButton(
