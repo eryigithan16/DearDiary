@@ -8,6 +8,7 @@ import com.example.deardiary.data.database.entity.ImageToDelete
 
 @Dao
 interface ImageToDeleteDao {
+
     @Query("SELECT * FROM image_to_delete_table ORDER BY id ASC")
     suspend fun getAllImages(): List<ImageToDelete>
 
