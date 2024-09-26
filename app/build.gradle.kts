@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("io.realm.kotlin")
-    id("kotlin-kapt")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
@@ -85,10 +84,10 @@ dependencies {
     implementation (libs.androidx.room.ktx)
 
     // Runtime Compose
-    implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+    implementation (libs.androidx.lifecycle.runtime.compose)
 
     // Splash API
-    implementation ("androidx.core:core-splashscreen:1.0.1")
+    implementation (libs.androidx.core.splashscreen)
 
     // Mongo DB Realm
     implementation (libs.kotlinx.coroutines.core)
@@ -111,20 +110,11 @@ dependencies {
     // CLOCK
     implementation (libs.clock)
 
-    // Message Bar Compose
-    implementation (libs.messagebarcompose)
-
-    // One-Tap Compose
-    implementation (libs.onetapcompose)
-
     // Desugar JDK
     coreLibraryDesugaring (libs.desugar.jdk.libs)
 
-    //One Tab Google
-    implementation("com.github.stevdza-san:OneTapCompose:1.0.7")
-
-    //Message Bar
-    implementation("com.github.stevdza-san:MessageBarCompose:1.0.8")
+    implementation (libs.messagebarcompose)
+    implementation (libs.onetapcompose)
 
     implementation(project(":core:ui"))
     implementation(project(":core:util"))
@@ -132,7 +122,4 @@ dependencies {
     implementation(project(":feature:auth"))
     implementation(project(":feature:home"))
     implementation(project(":feature:write"))
-}
-kapt {
-    correctErrorTypes = true
 }

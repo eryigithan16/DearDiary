@@ -54,6 +54,7 @@ dependencies {
     implementation (libs.firebase.auth.ktx)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.library.sync)
+    implementation (libs.androidx.lifecycle.runtime.compose)
 
     implementation(project(":core:util"))
     implementation(project(":core:ui"))

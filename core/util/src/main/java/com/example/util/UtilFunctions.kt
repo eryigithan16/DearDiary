@@ -1,7 +1,6 @@
 package com.example.util
 
 import android.net.Uri
-import androidx.compose.ui.util.fastForEachIndexed
 import com.google.firebase.storage.FirebaseStorage
 import io.realm.kotlin.types.RealmInstant
 import java.time.Instant
@@ -33,7 +32,7 @@ fun fetchImagesFromFirebase(
     onReadyToDisplay: () -> Unit = {}
 ) {
     if (remoteImagePaths.isNotEmpty()) {
-        remoteImagePaths.fastForEachIndexed { index, image ->
+        remoteImagePaths.forEachIndexed { index, image ->
             if (image.trim().isNotEmpty()) {
                 FirebaseStorage.getInstance().reference.child(image.trim()).downloadUrl
                     .addOnSuccessListener {

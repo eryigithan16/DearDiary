@@ -62,6 +62,7 @@ dependencies {
     implementation (libs.androidx.hilt.navigation.compose)
     implementation (libs.firebase.auth.ktx)
     implementation (libs.firebase.storage.ktx)
+    implementation (libs.androidx.lifecycle.runtime.compose)
 
     implementation(project(":core:util"))
     implementation(project(":core:ui"))

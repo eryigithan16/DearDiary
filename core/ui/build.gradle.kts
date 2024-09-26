@@ -48,4 +48,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     implementation (libs.kotlinx.coroutines.core)
     implementation (libs.library.sync)
+    implementation (libs.androidx.lifecycle.runtime.compose)
 }

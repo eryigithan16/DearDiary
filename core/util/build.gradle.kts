@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.ui.tooling.preview)
     implementation (libs.coil.compose)
+    implementation (libs.androidx.lifecycle.runtime.compose)
 
     implementation(project(":core:ui"))
 }
