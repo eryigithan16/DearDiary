@@ -3,6 +3,7 @@ package com.example.deardiary.presentation.screens.write
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -30,6 +31,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
@@ -86,19 +88,20 @@ fun WriteContent(
             modifier = Modifier
                 .weight(1f)
                 .verticalScroll(state = scrollState)
-        )
-        {
+        ) {
             Spacer(modifier = Modifier.height(30.dp))
             HorizontalPager(state = pagerState)
             { page ->
-                AsyncImage(
-                    modifier = Modifier.size(120.dp),
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(Mood.entries[page].icon)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = "Mood Image"
-                )
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    AsyncImage(
+                        modifier = Modifier.size(120.dp),
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(Mood.entries[page].icon)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = "Mood Image"
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(30.dp))
             TextField(

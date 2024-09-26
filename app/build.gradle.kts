@@ -101,9 +101,6 @@ dependencies {
     // Coil
     implementation (libs.coil.compose)
 
-    // Pager - Accompanist [DEPRECATED]
-//    implementation "com.google.accompanist:accompanist-pager:0.27.0"
-
     // Date-Time Picker
     implementation (libs.core)
 
