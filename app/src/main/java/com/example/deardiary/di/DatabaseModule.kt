@@ -2,9 +2,9 @@ package com.example.deardiary.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.deardiary.connectivity.NetworkConnectivityObserver
-import com.example.deardiary.data.database.ImagesDatabase
-import com.example.deardiary.util.Constants.IMAGES_DATABASE
+import com.example.mongo.database.ImagesDatabase
+import com.example.util.Constants.IMAGES_DATABASE
+import com.example.util.connectivity.NetworkConnectivityObserver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

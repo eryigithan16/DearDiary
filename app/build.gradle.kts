@@ -3,20 +3,20 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("io.realm.kotlin")
     id("kotlin-kapt")
+    id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
-    id("com.google.devtools.ksp")
     kotlin("plugin.serialization") version "1.9.23"
 }
 
 android {
     namespace = "com.example.deardiary"
-    compileSdk = 34
+    compileSdk = ProjectConfig.compileSdk
 
     defaultConfig {
         applicationId = "com.example.deardiary"
-        minSdk = 28
-        targetSdk = 34
+        minSdk = ProjectConfig.minSdk
+        targetSdk = ProjectConfig.targetSdk
         versionCode = 1
         versionName = "1.0"
 
@@ -43,7 +43,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = ProjectConfig.extensionVersion
     }
     packaging {
         resources {
@@ -71,17 +71,18 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // Compose Navigation
-    implementation ("androidx.navigation:navigation-compose:2.8.0-alpha08")
-    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation (libs.androidx.navigation.compose)
+
+    implementation (libs.kotlinx.serialization.json)
 
     // Firebase
-    implementation ("com.google.firebase:firebase-auth-ktx:23.0.0")
-    implementation ("com.google.firebase:firebase-storage-ktx:21.0.0")
+    implementation (libs.firebase.auth.ktx)
+    implementation (libs.firebase.storage.ktx)
 
     // Room components
-    implementation ("androidx.room:room-runtime:2.6.1")
-    ksp ("androidx.room:room-compiler:2.6.1")
-    implementation ("androidx.room:room-ktx:2.6.1")
+    implementation (libs.androidx.room.runtime)
+    ksp (libs.androidx.room.compiler)
+    implementation (libs.androidx.room.ktx)
 
     // Runtime Compose
     implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
@@ -90,43 +91,47 @@ dependencies {
     implementation ("androidx.core:core-splashscreen:1.0.1")
 
     // Mongo DB Realm
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
-    implementation ("io.realm.kotlin:library-sync:1.11.0")
+    implementation (libs.kotlinx.coroutines.core)
+    implementation (libs.library.sync)
 
     // Dagger Hilt
-    implementation ("com.google.dagger:hilt-android:2.51.1")
-    ksp ("com.google.dagger:hilt-compiler:2.51.1")
-    implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation (libs.hilt.android)
+    ksp (libs.hilt.compiler)
+    implementation (libs.androidx.hilt.navigation.compose)
 
     // Coil
-    implementation ("io.coil-kt:coil-compose:2.4.0")
-
-    // Pager - Accompanist [DEPRECATED]
-//    implementation "com.google.accompanist:accompanist-pager:0.27.0"
+    implementation (libs.coil.compose)
 
     // Date-Time Picker
-    implementation ("com.maxkeppeler.sheets-compose-dialogs:core:1.0.2")
+    implementation (libs.date.time.picker)
 
     // CALENDAR
-    implementation ("com.maxkeppeler.sheets-compose-dialogs:calendar:1.0.2")
+    implementation (libs.calendar)
 
     // CLOCK
-    implementation ("com.maxkeppeler.sheets-compose-dialogs:clock:1.0.2")
+    implementation (libs.clock)
 
     // Message Bar Compose
-    implementation ("com.github.stevdza-san:MessageBarCompose:1.0.5")
+    implementation (libs.messagebarcompose)
 
     // One-Tap Compose
-    implementation ("com.github.stevdza-san:OneTapCompose:1.0.7")
+    implementation (libs.onetapcompose)
 
     // Desugar JDK
-    coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:2.0.4")
+    coreLibraryDesugaring (libs.desugar.jdk.libs)
 
     //One Tab Google
     implementation("com.github.stevdza-san:OneTapCompose:1.0.7")
 
     //Message Bar
     implementation("com.github.stevdza-san:MessageBarCompose:1.0.8")
+
+    implementation(project(":core:ui"))
+    implementation(project(":core:util"))
+    implementation(project(":data:mongo"))
+    implementation(project(":feature:auth"))
+    implementation(project(":feature:home"))
+    implementation(project(":feature:write"))
 }
 kapt {
     correctErrorTypes = true
