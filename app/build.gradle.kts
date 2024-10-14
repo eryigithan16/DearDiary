@@ -10,11 +10,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.deardiary"
+    namespace = "com.eryigit.deardiary"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.deardiary"
+        applicationId = "com.eryigit.deardiary"
         minSdk = 28
         targetSdk = 34
         versionCode = 1
